@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+{% block title %}Invoice #{{ order.id }} - PharmaFlow{% endblock %}
+
+{% block page_title %}Official Transaction Receipt{% endblock %}
+
+{% block extra_css %}
+<style>
+    .bill-card {
+        max-width: 600px;
+        margin: 2rem auto;
+        padding: 4rem;
+        background: #FFFFFF;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        border: 1px solid #E2E8F0;
+        position: relative;
+    }
+
+    .bill-header {
+        text-align: center;
+        border-bottom: 2px solid #E2E8F0;
+        padding-bottom: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .bill-items {
+        width: 100%;
+        margin: 2rem 0;
+    }
+
+    .item-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #F1F5F9;
+    }
+
+    .total-footer {
+        display: flex;
+        justify-content: space-between;
+        padding-top: 1.5rem;
+        margin-top: 1.5rem;
+        border-top: 3px double #E2E8F0;
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: var(--secondary);
+    }
+    
+    .print-btn {
+        display: block;
+        margin-top: 3rem;
+        text-align: center;
+        padding: 1.2rem;
+        background: var(--secondary);
+        color: white;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 700;
+        transition: transform 0.2s;
+        cursor: pointer;
+    }
+    
+    .print-btn:hover { transform: scale(1.02); background: #34495e; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="bill-card" id="printable-area">
+    <div class="bill-header">
+        <h1 style="color: var(--primary); margin: 0; font-family: 'Outfit';">PharmaFlow Official Bill</h1>
+        <p style="color: var(--text-light); text-transform: uppercase; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; margin-top: 1rem;">Transaction Number: PHA-{{ order.id }}</p>
+        <p style="color: var(--text-light); font-size: 0.8rem; margin-top: 0.5rem;">Date of Purchase: {{ order.order_date|date:"F d, Y H:i" }}</p>
+    </div>
+
+    <div style="margin-bottom: 3rem;">
+        <h4 style="color: var(--secondary); border-bottom: 1px solid #E2E8F0; padding-bottom: 0.5rem;">Customer Information</h4>
+        <div class="item-row"><span>FULL NAME:</span> <b>{{ order.customer_name }}</b></div>
+        <div class="item-row"><span>MOBILE NUMBER:</span> <b>{{ order.mobile_number }}</b></div>
+    </div>
+
+    <div>
+        <h4 style="color: var(--secondary); border-bottom: 1px solid #E2E8F0; padding-bottom: 0.5rem;">Purchase Information</h4>
+        <div class="item-row"><span>MEDICATION NAME:</span> <b>{{ order.item.name }}</b></div>
+        <div class="item-row"><span>UNIT PRICE:</span> <b>${{ order.unit_price }}</b></div>
+        <div class="item-row"><span>PURCHASED QUANTITY:</span> <b>{{ order.quantity }} tablets</b></div>
+    </div>
+
+    <div class="total-footer">
+        <span>Amount Charged</span>
+        <span>${{ order.total_price }}</span>
+    </div>
+
+    <p style="text-align: center; color: var(--text-light); font-size: 0.75rem; font-style: italic; margin-top: 3rem;">Please keep this receipt for future reference. Thank you for choosing PharmaFlow.</p>
+</div>
+
+<div style="max-width: 600px; margin: 0 auto;">
+    <button onclick="window.print()" class="print-btn">🖨️ Print Digital Bill</button>
+    <a href="{% url 'inventory_list' %}" style="display: block; text-align: center; margin-top: 1.5rem; text-decoration: none; color: var(--primary); font-weight: 700;">Back to Inventory Dashboard</a>
+</div>
+{% endblock %}

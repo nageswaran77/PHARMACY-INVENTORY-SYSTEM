@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}Sales History - PharmaFlow Audit{% endblock %}
+
+{% block page_title %}Sales & Revenue Dashboard{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 2rem; display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; animation: slideIn 0.3s ease-out;">
+    <div class="card" style="margin-bottom: 0; background: linear-gradient(135deg, var(--primary) 0%, #008f7e 100%); color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 2.5rem;">
+        <p style="font-size: 0.85rem; opacity: 0.8; text-transform: uppercase; font-weight: 700; margin-bottom: 0.5rem; letter-spacing: 0.1em;">Accumulated Total Revenue</p>
+        <h1 style="font-size: 3.5rem; font-family: 'Outfit'; margin: 0; text-shadow: 0 4px 10px rgba(0,0,0,0.1);">${{ total_revenue|floatformat:2 }}</h1>
+    </div>
+    <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+        <p style="font-size: 0.85rem; color: var(--text-light); text-transform: uppercase; font-weight: 700; margin-bottom: 0.5rem; letter-spacing: 0.1em;">Total Recorded Transactions</p>
+        <h1 style="font-size: 3.5rem; font-family: 'Outfit'; margin: 0; color: var(--secondary);">{{ sales.count }}</h1>
+    </div>
+</div>
+
+<div class="card" style="border-top: 5px solid var(--primary);">
+    <h2 style="color: var(--secondary); margin-top: 0; display: flex; align-items: center; gap: 10px;">
+        <i>📜</i> Detailed Sales History
+    </h2>
+    <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 2rem;">Real-time transaction history for all SKU medications dispensed by pharmacists.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 15%">TIMESTAMP</th>
+                <th style="width: 25%">MEDICATION</th>
+                <th style="width: 15%">QTY</th>
+                <th style="width: 15%">UNIT PRICE</th>
+                <th style="width: 15%">REVENUE</th>
+                <th style="width: 15%">DISPENSED BY</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for sale in sales %}
+            <tr>
+                <td style="color: var(--text-light); font-size: 0.8rem;">{{ sale.date|date:"M d, H:i" }}</td>
+                <td style="font-weight: 700; color: var(--secondary);">{{ sale.item.name }}</td>
+                <td>{{ sale.quantity }}</td>
+                <td style="color: var(--primary); font-weight: 600;">${{ sale.unit_price_at_sale }}</td>
+                <td style="font-family: 'Outfit'; font-weight: 700; color: var(--secondary);">${{ sale.total_price }}</td>
+                <td>
+                    <span class="badge" style="background: rgba(44, 62, 80, 0.05); color: var(--secondary);">{{ sale.user.username }}</span>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" style="text-align: center; color: var(--text-light); padding: 4rem;">No sales history available yet. System is awaiting primary transactions.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

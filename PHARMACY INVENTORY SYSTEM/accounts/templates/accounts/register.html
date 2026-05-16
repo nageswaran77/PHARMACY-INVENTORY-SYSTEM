@@ -1,0 +1,166 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Register - PharmaFlow Access Management{% endblock %}
+
+{% block extra_css %}
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        background: url("{% static 'images/medical_background.png' %}") no-repeat center center fixed;
+        background-size: cover;
+        height: 100vh;
+        overflow: hidden;
+        position: relative;
+    }
+
+    body::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(15, 23, 42, 0.7); /* Dark overlay for better readability */
+        z-index: -1;
+    }
+
+
+    .register-container {
+        position: relative;
+        width: 100%;
+        max-width: 480px;
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(25px);
+        -webkit-backdrop-filter: blur(25px);
+        padding: 3rem;
+        border-radius: 32px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 50px 100px -20px rgba(0, 0, 0, 0.6);
+        text-align: center;
+        animation: slideUp 0.9s cubic-bezier(0.19, 1, 0.22, 1);
+        margin: 0 auto;
+    }
+
+    @keyframes slideUp {
+        from { opacity: 0; transform: translateY(50px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .register-container h1 {
+        font-family: 'Outfit', sans-serif;
+        font-size: 2rem;
+        color: white;
+        margin-bottom: 0.5rem;
+    }
+
+    .register-container p {
+        color: #94A3B8;
+        margin-bottom: 2rem;
+        font-size: 0.95rem;
+    }
+
+    .form-group {
+        text-align: left;
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        color: #CBD5E1;
+        font-size: 0.75rem;
+        margin-bottom: 0.5rem;
+        display: block;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+    }
+
+    .register-container input {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: white;
+        padding: 0.9rem 1.25rem;
+        border-radius: 12px;
+        font-size: 1rem;
+    }
+
+    .register-container input:focus {
+        background: rgba(255, 255, 255, 0.07);
+        border-color: var(--primary);
+    }
+
+    .btn-register {
+        width: 100%;
+        background: linear-gradient(135deg, #00A693 0%, #008f7e 100%);
+        color: white;
+        padding: 1.1rem;
+        border: none;
+        border-radius: 12px;
+        font-size: 1rem;
+        font-weight: 800;
+        cursor: pointer;
+        transition: all 0.3s;
+        box-shadow: 0 10px 20px -5px rgba(0, 166, 147, 0.3);
+        margin-top: 1rem;
+    }
+
+    .btn-register:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 20px 30px -10px rgba(0, 166, 147, 0.4);
+    }
+
+    .login-link {
+        margin-top: 2rem;
+        font-size: 0.85rem;
+        color: #94A3B8;
+    }
+
+    .login-link a {
+        color: var(--primary);
+        font-weight: 700;
+        text-decoration: none;
+    }
+
+    .errorlist {
+        list-style: none;
+        padding: 0;
+        color: #F87171;
+        font-size: 0.75rem;
+        margin-top: 5px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="register-container">
+    <h1>Create Access</h1>
+    <p>Pharmacy Credential System</p>
+    
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="id_username">Authorized Username</label>
+            {{ form.username }}
+            {{ form.username.errors }}
+        </div>
+        
+        <div class="form-group">
+            <label for="id_password1">New Password</label>
+            <input type="password" name="password1" id="id_password1" placeholder="Enter secure password" required>
+        </div>
+
+        <div class="form-group">
+            <label for="id_password2">Re-type Password</label>
+            <input type="password" name="password2" id="id_password2" placeholder="Repeat for verification" required>
+            {{ form.non_field_errors }}
+        </div>
+        
+        <button type="submit" class="btn-register">Initialize Profile</button>
+    </form>
+    
+    <div class="login-link">
+        Already registered? <a href="{% url 'login' %}">Sign into System</a>
+    </div>
+</div>
+{% endblock %}

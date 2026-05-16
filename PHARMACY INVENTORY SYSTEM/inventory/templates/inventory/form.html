@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block page_title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 600px; margin: 0 auto; animation: slideIn 0.4s ease-out; border-top: 5px solid var(--primary);">
+    <div style="background: #F1F5F9; margin: -1.5rem -1.5rem 1.5rem -1.5rem; padding: 1.5rem; border-radius: 12px 12px 0 0; display: flex; align-items: center; justify-content: space-between;">
+        <h2 style="margin: 0; color: var(--secondary); font-size: 1.2rem;">
+            {% if item %}
+                Updating: <span style="color: var(--primary);">{{ item.name }}</span>
+            {% else %}
+                {{ title }}
+            {% endif %}
+        </h2>
+        {% if item %}
+            <span class="badge badge-ok">Stock: {{ item.quantity }}</span>
+        {% endif %}
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        
+        {% if form.non_field_errors %}
+            <div class="alert alert-error">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+
+        {% for field in form %}
+            <div class="form-group" style="margin-bottom: 1.25rem;">
+                <label for="{{ field.id_for_label }}" style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--secondary); font-size: 0.9rem;">
+                    {{ field.label }}
+                </label>
+                {{ field }}
+                {% if field.help_text %}
+                    <small style="color: var(--text-light); display: block; margin-top: 0.25rem; font-size: 0.75rem;">{{ field.help_text }}</small>
+                {% endif %}
+                {% if field.errors %}
+                    <div style="color: var(--accent); font-size: 0.8rem; margin-top: 0.25rem;">
+                        {{ field.errors }}
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+
+        <!-- If the form object is empty or not passed, but we need the quantity field (fallback for simple stock updates) -->
+        {% if not form %}
+            <div class="form-group">
+                <label for="id_quantity">Enter Quantity</label>
+                <input type="number" name="quantity" id="id_quantity" min="1" required placeholder="0">
+            </div>
+        {% endif %}
+
+        <div style="display: flex; gap: 12px; margin-top: 2.5rem; border-top: 1px solid #E2E8F0; padding-top: 1.5rem;">
+            <button type="submit" class="btn btn-primary" style="flex-grow: 1; padding: 0.8rem; font-size: 1rem; border-radius: 10px;">
+                {% if title == 'Dispense Medication' %}Confirm Sale{% else %}Save Medication{% endif %}
+            </button>
+            <a href="{% url 'inventory_list' %}" class="btn" style="background: #F1F5F9; color: var(--text-light); text-align: center; width: 100px; padding: 0.8rem; border-radius: 10px; font-weight: 500;">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

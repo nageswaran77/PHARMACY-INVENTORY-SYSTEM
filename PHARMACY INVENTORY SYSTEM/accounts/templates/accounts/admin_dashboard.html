@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard - User Management{% endblock %}
+
+{% block page_title %}Admin User Management{% endblock %}
+
+{% block content %}
+<div class="card" style="border-top: 5px solid var(--secondary); animation: slideIn 0.3s ease-out;">
+    <h2 style="color: var(--secondary); margin-top: 0; display: flex; align-items: center; gap: 10px;">
+        <i>👥</i> System Users & Roles
+    </h2>
+    <p style="color: var(--text-light); font-size: 0.95rem; margin-bottom: 2rem;">Manage system access, assign roles, and remove users as necessary.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 20%">USERNAME</th>
+                <th style="width: 20%">EMAIL</th>
+                <th style="width: 25%">CURRENT ROLE</th>
+                <th style="width: 20%">CHANGE ROLE</th>
+                <th style="width: 15%">ACTIONS</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user_obj in users %}
+            <tr>
+                <td style="font-weight: 700; color: var(--secondary);">{{ user_obj.username }} {% if user_obj.is_superuser %}<span class="badge" style="background: rgba(0, 166, 147, 0.1); color: var(--primary);">SU</span>{% endif %}</td>
+                <td style="color: var(--text-light);">{{ user_obj.email|default:"No email" }}</td>
+                <td>
+                    {% if user_obj.groups.all %}
+                        {% for group in user_obj.groups.all %}
+                            <span class="badge badge-ok">{{ group.name }}</span>
+                        {% endfor %}
+                    {% else %}
+                        <span class="badge badge-low">No Role</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <form action="{% url 'update_role' user_obj.id %}" method="post" style="display: flex; gap: 5px;">
+                        {% csrf_token %}
+                        <select name="group_id" style="padding: 0.3rem; font-size: 0.75rem; width: auto; border: 1px solid #E2E8F0; border-radius: 4px;">
+                            <option value="">None</option>
+                            {% for group in groups %}
+                                <option value="{{ group.id }}" {% if group in user_obj.groups.all %}selected{% endif %}>{{ group.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <button type="submit" class="btn btn-primary btn-sm" style="padding: 0.2rem 0.6rem;">Update</button>
+                    </form>
+                </td>
+                <td>
+                    {% if not user_obj.is_superuser %}
+                    <form action="{% url 'delete_user' user_obj.id %}" method="post" onsubmit="return confirm('Wait! Are you sure you want to delete this user? This cannot be undone.');">
+                        {% csrf_token %}
+                        <button type="submit" class="btn" style="background: var(--accent); color: white; padding: 0.3rem 0.6rem; font-size: 0.8rem; border-radius: 4px;">Delete</button>
+                    </form>
+                    {% else %}
+                    <span style="color: grey; font-size: 0.7rem; font-style: italic;">Protected</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" style="text-align: center; color: var(--text-light); padding: 3rem;">Something went wrong, no users found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="card" style="margin-top: 2rem; border-left: 5px solid var(--primary);">
+    <h3 style="margin-top: 0; color: var(--primary);">System Role Definition</h3>
+    <ul style="color: var(--text-light); font-size: 0.9rem; line-height: 1.6;">
+        <li><b>Admin:</b> Full control over inventory, users, and audit logs.</li>
+        <li><b>Pharmacist:</b> View inventory and dispense medications.</li>
+        <li><b>Technician:</b> View inventory and add new stock.</li>
+        <li><b>Auditor:</b> View inventory and system audit history (read-only).</li>
+    </ul>
+</div>
+{% endblock %}

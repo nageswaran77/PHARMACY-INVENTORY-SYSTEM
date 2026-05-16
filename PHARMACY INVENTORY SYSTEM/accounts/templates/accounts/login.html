@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Login - PharmaFlow Authentication{% endblock %}
+
+{% block extra_css %}
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        background: url("{% static 'images/medical_background.png' %}") no-repeat center center fixed;
+        background-size: cover;
+        height: 100vh;
+        overflow: hidden;
+        position: relative;
+    }
+
+    body::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(15, 23, 42, 0.7); /* Dark overlay for better readability */
+        z-index: -1;
+    }
+
+
+    .login-container {
+        position: relative;
+        width: 100%;
+        max-width: 420px;
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        padding: 3rem;
+        border-radius: 24px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        text-align: center;
+        animation: floatIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        margin: 0 auto;
+    }
+
+    @keyframes floatIn {
+        from { opacity: 0; transform: translateY(30px) scale(0.95); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .logo-badge {
+        width: 60px;
+        height: 60px;
+        background: var(--primary);
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        font-size: 1.8rem;
+        color: white;
+        box-shadow: 0 0 20px rgba(0, 166, 147, 0.4);
+        transform: rotate(-10deg);
+    }
+
+    .login-container h1 {
+        font-family: 'Outfit', sans-serif;
+        font-size: 2.2rem;
+        color: white;
+        margin-bottom: 0.5rem;
+        letter-spacing: -0.02em;
+    }
+
+    .login-container p {
+        color: #94A3B8;
+        margin-bottom: 2.5rem;
+        font-size: 1rem;
+    }
+
+    .form-group {
+        text-align: left;
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        color: #CBD5E1;
+        font-size: 0.85rem;
+        margin-bottom: 0.5rem;
+        display: block;
+        font-weight: 500;
+    }
+
+    .btn-login {
+        width: 100%;
+        background: linear-gradient(135deg, var(--primary) 0%, #00d2bb 100%);
+        color: white;
+        padding: 1rem;
+        border: none;
+        border-radius: 12px;
+        font-size: 1.05rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s;
+        box-shadow: 0 10px 15px -3px rgba(0, 166, 147, 0.3);
+        margin-top: 1rem;
+    }
+
+    .btn-login:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 20px 25px -5px rgba(0, 166, 147, 0.4);
+        filter: brightness(1.1);
+    }
+
+    .register-link {
+        margin-top: 2rem;
+        font-size: 0.9rem;
+        color: #94A3B8;
+    }
+
+    .register-link a {
+        color: var(--primary);
+        font-weight: 700;
+        text-decoration: none;
+        transition: color 0.2s;
+    }
+
+    .register-link a:hover { color: #00d2bb; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="login-container">
+    <div class="logo-badge">💊</div>
+    <h1>PharmaFlow</h1>
+    <p>Sign In to Gateway</p>
+    
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="id_username">Portal Username</label>
+            <input type="text" name="username" id="id_username" placeholder="Username" required>
+        </div>
+        <div class="form-group">
+            <label for="id_password">Encoded Password</label>
+            <input type="password" name="password" id="id_password" placeholder="••••••••" required>
+        </div>
+        
+        <button type="submit" class="btn-login">Open Portal</button>
+    </form>
+    
+    <div class="register-link">
+        New Access? <a href="{% url 'register' %}">Create Account</a>
+    </div>
+</div>
+{% endblock %}
